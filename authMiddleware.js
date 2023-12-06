@@ -2,10 +2,22 @@
 const authenticate = (req, res, next) => {
   // Your authentication logic goes here
   // For example, check for a valid token, session, or any other authentication mechanism
-  if (req.headers.authorization) {
-    next(); // Move on to the next middleware or route handler
+  const token = req.headers["authorization"];
+  console.log("bearerHeader: ", token);
+
+  if (typeof token !== "undefined") {
+    jwt.verify(token, process.env.JWT_SECRET, function (err, decodedToken) {
+      if (err) {
+        console.info("token did not work");
+        return res.status(403).send("Error");
+      }
+      // console.log(decodedToken, "!!!!!!!!!");
+      req.token = token;
+      req.decodedToken = decodedToken;
+      next();
+    });
   } else {
-    res.status(401).json({ message: "Unauthorized" });
+    res.sendStatus(403);
   }
 };
 

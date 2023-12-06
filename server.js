@@ -21,7 +21,7 @@ app.use(
     credentials: true,
     // origin: "https://seg-ops-bulletin.netlify.app", // Replace with your client's origin
     // origin: "http://localhost:5173",
-    origin: ""
+    origin: "",
   })
 );
 
@@ -30,7 +30,7 @@ app.use("/guides", guideRoutes);
 
 // connecting to DB
 mongoose
-  .connect(process.env.DATABASE_URL)
+  .connect(process.env.DATABASE_URL_QA)
   .then(() => {
     app.listen(process.env.PORT || 8000, () => {
       console.log("connected to mongodb.");

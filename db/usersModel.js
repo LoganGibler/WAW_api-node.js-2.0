@@ -14,6 +14,15 @@ const usersSchema = mongoose.Schema({
   },
   admin: {
     type: Boolean,
+    default: false,
+  },
+  failedLoginAttempts: {
+    type: Number,
+    default: 2,
+  },
+  lockedUntil: {
+    type: Number,
+    default: null,
   },
 });
 
