@@ -1,16 +1,15 @@
-const Users = require("../db/usersModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const jwtsecret = process.env.JWT_SECRET;
-// const mongoose = require("mongoose");
-// exports.getUsers = async (req, res) => {
-//   try {
-//     const users = await Users.find({});
-//     res.json(users);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
+const Users = require("../db/usersModel");
+
+exports.testAuth = async (req, res) => {
+  try {
+    res.status(200).json({ message: "User is authenticated." });
+  } catch (error) {
+    res.status(500).json({ message: "User is not authenticated." });
+  }
+};
 
 // unprotected routes
 exports.createUser = async (req, res) => {
@@ -62,7 +61,7 @@ exports.loginUser = async (req, res) => {
       });
     }
 
-    bcrypt.compare(password, user.password, (err, result) => {
+    bcrypt.compare(password, user.password, async (err, result) => {
       if (err) {
         return res.status(403).json({ message: "Invalid credentials." });
       }
@@ -70,40 +69,25 @@ exports.loginUser = async (req, res) => {
       if (result) {
         // Reset failed login attempts upon successful login
         const filter = { username: username };
-        const update = { failedLoginAttempts: 0, lockedUntil: null };
-
-        const resetUser = Users.updateOne(filter, update);
-        res.status(200).json("yaya")
-        // console.log("This user has been reset: ", resetUser.username);
-        // if (resetUser){
-
-        // }
-        // Users.updateOne(filter, update)
-        //   .then(() => {
-        //     const token = jwt.sign({ username }, jwtsecret, {
-        //       expiresIn: "12h",
-        //     });
-        //     console.log("token:", token);
-        //     return res.cookie("auth", token).json({ token });
-        //   })
-        //   .catch((error) => {
-        //     return res
-        //       .status(500)
-        //       .json({ message: "Error updating user data. 1111" });
-        //   });
+        const updatedData = { failedLoginAttempts: 0, lockedUntil: null };
+        const resetUser = await Users.updateOne(filter, updatedData);
+        console.log(process.env.JWT_SECRET);
+        console.log({ username });
+        const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+          expiresIn: "12h",
+        });
+        console.log("Generated Token: ", token);
+        return res.cookie("auth", token, { httpOnly: true }).json({ token });
       } else {
-        // Increment failed login attempts
         const newFailedAttempts = user.failedLoginAttempts + 1;
         let update = { failedLoginAttempts: newFailedAttempts };
         let filter = { username: username };
-        // Lock the account if max failed attempts reached
         if (newFailedAttempts >= MAX_FAILED_ATTEMPTS) {
           const lockoutDuration = LOCKOUT_DURATION_MINUTES * 60 * 1000; // in milliseconds
           const lockedUntil = Date.now() + lockoutDuration;
           update = { ...update, lockedUntil };
         }
 
-        // Update user data
         Users.updateOne(filter, update)
           .then(() => {
             return res.status(404).json({ message: "Invalid credentials." });

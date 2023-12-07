@@ -18,11 +18,10 @@ const usersSchema = mongoose.Schema({
   },
   failedLoginAttempts: {
     type: Number,
-    default: 2,
+    default: 0,
   },
   lockedUntil: {
     type: Number,
-    default: null,
   },
 });
 

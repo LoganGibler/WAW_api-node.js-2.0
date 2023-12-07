@@ -8,6 +8,7 @@ const authenticate = require("../authMiddleware");
 router.post("/register", UserController.createUser);
 router.post("/login", UserController.loginUser);
 
-// Add more user-related routes as needed
+// protectedRoutes
+router.get("/testauth", authenticate, UserController.testAuth)
 
 module.exports = router;

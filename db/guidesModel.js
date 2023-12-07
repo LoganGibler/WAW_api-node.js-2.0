@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const guidesSchema = mongoose.Schema({
+const postSchema = mongoose.Schema({
   vmtitle: {
     type: String,
     required: [true, "Please enter the title of this vm."],
@@ -19,8 +19,12 @@ const guidesSchema = mongoose.Schema({
   steps: [],
   published: {
     type: Boolean,
+    default: false,
   },
   author: {
+    type: String,
+  },
+  author_id: {
     type: String,
   },
   date: {
@@ -28,12 +32,14 @@ const guidesSchema = mongoose.Schema({
   },
   approved: {
     type: Boolean,
+    default: false,
   },
   featured: {
     type: Boolean,
+    default: false,
   },
 });
 
-const Guides = mongoose.model("Guides", guidesSchema);
+const Guides = mongoose.model("Post", postSchema);
 
 module.exports = Guides;
