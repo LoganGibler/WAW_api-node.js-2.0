@@ -1,9 +1,9 @@
 const Guides = require("../db/guidesModel");
 
-exports.getGuides = async (req, res) => {
+exports.allGuides = async (req, res) => {
   try {
-    const guides = await Guides.find({ approved: true, published: true });
-    res.json(guides);
+    const guides = await Guides.find({});
+    res.status(200).json({ guides });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -163,7 +163,7 @@ exports.editDifficulty = async (req, res) => {
 exports.getFeaturedGuides = async (req, res) => {
   try {
     const filter = { featured: true };
-    const featuredGuides = Guides.find(filter);
+    const featuredGuides = await Guides.find(filter);
     res.status(200).json({ featuredGuides });
   } catch (error) {
     res.status(500).json({ message: "could not find featured guides." });
@@ -172,7 +172,7 @@ exports.getFeaturedGuides = async (req, res) => {
 
 exports.getPublishedUnapprovedGuides = async (req, res) => {
   try {
-    const filter = { approved: false, published: true };
+    const filter = { approved: false, published: "true" };
     const publishedUnapprovedGuides = await Guides.find(filter);
     res.status(200).json({ publishedUnapprovedGuides });
   } catch (error) {
@@ -194,6 +194,7 @@ exports.getUsersPublishedUnreviewedGuides = async (req, res) => {
   }
 };
 
+// store user ID in cookie upon login. then grab cookie out of request, doesnt have to be http only, but prefered.
 exports.getPublishedApprovedGuides = async (req, res) => {
   try {
     const filter = { approved: true, published: true };
@@ -204,12 +205,24 @@ exports.getPublishedApprovedGuides = async (req, res) => {
   }
 };
 
-exports.getGuideById = async (req, res) => {
+exports.getPublishedApprovedGuidesByUser = async (req, res) => {
+  try {
+    const filter = { author_id: req.body._id, published: true, approved: true };
+    const approvedGuides = await Guides.find(filter);
+    res.status(200).json({ approvedGuides });
+  } catch (error) {
+    res.status(500).json({ message: "could not find guides." });
+  }
+};
+
+exports.getPublicGuideById = async (req, res) => {
+  // this should run specifically when a user clicks on a guide on the front end.
   // on frontend, if guide is not published or approved,
   //  alert("This guide is not published.")
   // then route back to homepage.
+  // nvm ima just tighten the query params.
   try {
-    const filter = { _id: req.body._id };
+    const filter = { _id: req.body._id, published: true, approved: true };
     const guide = await Guides.find(filter);
     res.status(200).json({ guide });
   } catch (error) {
@@ -217,7 +230,17 @@ exports.getGuideById = async (req, res) => {
   }
 };
 
-exports.getAllGuidesByUserId = async (req, res) => {
+exports.getPrivateGuideById = async (req, res) => {
+  try {
+    const filter = { _id: req.body._id, published: false, approved: false };
+    const guide = await Guides.find(filter);
+    res.status(200).json({ guide });
+  } catch (error) {
+    res.status(500).json({ message: "could not find guides." });
+  }
+};
+
+exports.getPrivateGuidesByUserId = async (req, res) => {
   // pass in USER _id here, NOT guide _id
   try {
     const filter = {

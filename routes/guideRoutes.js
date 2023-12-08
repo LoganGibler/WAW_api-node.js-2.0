@@ -5,7 +5,7 @@ const GuideController = require("../controllers/guideControllers");
 const authenticate = require("../authMiddleware");
 
 // unprotectedRoutes
-router.get("/allGuides", GuideController.getGuides);
+// router.get("/allGuides", authenticate, GuideController.allGuides);
 
 // protectedRoutes
 
@@ -27,6 +27,48 @@ router.get(
   "/getFeaturedGuides",
   authenticate,
   GuideController.getFeaturedGuides
+);
+
+router.get(
+  "/getPublishedUnapprovedGuides",
+  authenticate,
+  GuideController.getPublishedUnapprovedGuides
+);
+
+router.post(
+  "/getUsersPublishedUnreviewedGuides",
+  authenticate,
+  GuideController.getUsersPublishedUnreviewedGuides
+);
+
+router.get(
+  "/getPublishedApprovedGuides",
+  authenticate,
+  GuideController.getPublishedApprovedGuides
+);
+
+router.post(
+  "/getPublishedApprovedGuidesByUser",
+  authenticate,
+  GuideController.getPublishedApprovedGuidesByUser
+);
+
+router.post(
+  "/getPublicGuideById",
+  authenticate,
+  GuideController.getPublicGuideById
+);
+
+router.post(
+  "/getPrivateGuideById",
+  authenticate,
+  GuideController.getPrivateGuideById
+);
+
+router.post(
+  "/getPrivateGuidesByUserId",
+  authenticate,
+  GuideController.getPrivateGuidesByUserId
 );
 
 module.exports = router;
