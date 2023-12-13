@@ -7,7 +7,8 @@ const authenticate = (req, res, next) => {
   // For example, check for a valid token, session, or any other authentication mechanism
 
   // this may need to be changed to //const token = req.cookies.auth; as this is an httponly cookie, that cannot be grabbed with JS.
-  const token = req.headers["authorization"];
+  // const token = req.headers["authorization"];
+  const token = req.cookies.AUTH_API;
   console.log("bearerHeader: ", token);
 
   if (typeof token !== "undefined") {

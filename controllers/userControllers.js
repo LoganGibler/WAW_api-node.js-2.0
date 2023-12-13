@@ -15,14 +15,14 @@ exports.testAuth = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(username, password);
+    // console.log(username, password);
 
     const userCheck = await Users.findOne({ username });
     if (userCheck) {
       return res.status(400).json({ message: "Username already exists." });
     }
     const salt = await bcrypt.genSalt();
-    console.log("salt:", salt);
+    // console.log("salt:", salt);
 
     const hashedPassword = bcrypt.hashSync(password, salt);
     const user = await Users.create({
@@ -43,7 +43,8 @@ exports.loginUser = async (req, res) => {
   let { username, password } = req.body;
   try {
     const user = await Users.findOne({ username });
-
+    console.log("user: ", user);
+    const user_id = user._id;
     if (!user) {
       return res.status(402).json({ message: "Invalid credentials." });
     }
@@ -71,13 +72,13 @@ exports.loginUser = async (req, res) => {
         const filter = { username: username };
         const updatedData = { failedLoginAttempts: 0, lockedUntil: null };
         const resetUser = await Users.updateOne(filter, updatedData);
-        console.log(process.env.JWT_SECRET);
-        console.log({ username });
+        // console.log(process.env.JWT_SECRET);
+        // console.log({ username });
         const token = jwt.sign({ username }, process.env.JWT_SECRET, {
           expiresIn: "12h",
         });
         console.log("Generated Token: ", token);
-        return res.cookie("auth", token, { httpOnly: true }).json({ token });
+        res.cookie("AUTH_API", token).json({ token, user_id }).status(200);
       } else {
         const newFailedAttempts = user.failedLoginAttempts + 1;
         let update = { failedLoginAttempts: newFailedAttempts };
