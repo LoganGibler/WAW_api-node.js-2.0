@@ -9,6 +9,6 @@ router.post("/register", UserController.createUser);
 router.post("/login", UserController.loginUser);
 
 // protectedRoutes
-router.get("/testauth", authenticate, UserController.testAuth)
+router.get("/testAuth", authenticate, UserController.testAuth)
 
 module.exports = router;

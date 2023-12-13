@@ -78,7 +78,11 @@ exports.loginUser = async (req, res) => {
           expiresIn: "12h",
         });
         console.log("Generated Token: ", token);
-        res.cookie("AUTH_API", token).json({ token, user_id }).status(200);
+        res
+          .cookie("USER_ID", user_id)
+          .cookie("AUTH_API", token)
+          .json({ user_id, token })
+          .status(200);
       } else {
         const newFailedAttempts = user.failedLoginAttempts + 1;
         let update = { failedLoginAttempts: newFailedAttempts };
