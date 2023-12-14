@@ -254,3 +254,16 @@ exports.getPrivateGuidesByUserId = async (req, res) => {
     res.status(500).json({ message: "could not find guides." });
   }
 };
+
+exports.getSearchResult = async (req, res) => {
+  try {
+    const searchResult = await Guides.find(
+      { $text: { $search: req.body.searchData } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
+
+    res.status(200).json({ searchResult });
+  } catch (error) {
+    res.status(500).json({ message: "Search failed." });
+  }
+};

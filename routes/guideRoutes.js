@@ -21,6 +21,7 @@ router.post("/editStep", authenticate, GuideController.editStep);
 router.post("/editDescription", authenticate, GuideController.editDescription);
 router.post("/editTitle", authenticate, GuideController.editTitle);
 router.post("/editDifficulty", authenticate, GuideController.editDifficulty);
+router.post("/getSearchResult", GuideController.getSearchResult);
 
 //get*Guides
 router.get(

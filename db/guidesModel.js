@@ -40,8 +40,17 @@ const postSchema = mongoose.Schema({
   },
   system: {
     type: String,
-    default: "hidden",
+    // default: "hidden",
   },
+});
+
+postSchema.index({
+  vmtitle: "text",
+  system: "text",
+  author: "text",
+  // description: "text",
+  hostedby: "text",
+  difficulty: "text",
 });
 
 const Guides = mongoose.model("Post", postSchema);
