@@ -38,6 +38,10 @@ const postSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  system: {
+    type: String,
+    default: "hidden",
+  },
 });
 
 const Guides = mongoose.model("Post", postSchema);

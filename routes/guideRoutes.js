@@ -43,7 +43,6 @@ router.post(
 
 router.get(
   "/getPublishedApprovedGuides",
-  authenticate,
   GuideController.getPublishedApprovedGuides
 );
 
