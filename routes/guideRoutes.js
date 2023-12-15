@@ -24,11 +24,7 @@ router.post("/editDifficulty", authenticate, GuideController.editDifficulty);
 router.post("/getSearchResult", GuideController.getSearchResult);
 
 //get*Guides
-router.get(
-  "/getFeaturedGuides",
-  authenticate,
-  GuideController.getFeaturedGuides
-);
+router.get("/getFeaturedGuides", GuideController.getFeaturedGuides);
 
 router.get(
   "/getPublishedUnapprovedGuides",
