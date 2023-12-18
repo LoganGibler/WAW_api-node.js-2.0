@@ -49,11 +49,7 @@ router.post(
   GuideController.getPublishedApprovedGuidesByUser
 );
 
-router.post(
-  "/getPublicGuideById",
-  authenticate,
-  GuideController.getPublicGuideById
-);
+router.post("/getPublicGuideById", GuideController.getPublicGuideById);
 
 router.post(
   "/getPrivateGuideById",
