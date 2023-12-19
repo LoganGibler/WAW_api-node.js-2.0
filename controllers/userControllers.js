@@ -1,11 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const jwtsecret = process.env.JWT_SECRET;
 const Users = require("../db/usersModel");
 
 exports.testAuth = async (req, res) => {
   try {
-    res.status(200).json({ message: "User is authenticated." });
+    let userID = req.user_id;
+    res.status(200).json({ message: "User is authenticated.", userID });
   } catch (error) {
     res.status(500).json({ message: "User is not authenticated." });
   }
@@ -43,7 +43,7 @@ exports.loginUser = async (req, res) => {
   let { username, password } = req.body;
   try {
     const user = await Users.findOne({ username });
-    console.log("user: ", user);
+    // console.log("user: ", user);
     const user_id = user._id;
     if (!user) {
       return res.status(402).json({ message: "Invalid credentials." });
@@ -77,7 +77,7 @@ exports.loginUser = async (req, res) => {
         const token = jwt.sign({ username }, process.env.JWT_SECRET, {
           expiresIn: "12h",
         });
-        console.log("Generated Token: ", token);
+        // console.log("Generated Token: ", token);
         res
           .cookie("USER_ID", user_id)
           .cookie("AUTH_API", token)
@@ -106,5 +106,60 @@ exports.loginUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Login has failed." });
+  }
+};
+
+exports.getUser = async (req, res) => {
+  const { _id } = req.body._id;
+  // console.log("/getUser req.body: ");
+  try {
+    const user = await Users.findOne({ _id: _id });
+    res.status(200).json({ message: "User found.", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving user data." });
+  }
+};
+
+exports.addGuideToBookmarks = async (req, res) => {
+  try {
+    console.log("req.body: ", req.body);
+    const update = { $push: { bookmarkedGuides: req.body.guide_id } };
+    const filter = { _id: req.body._id };
+    const addedGuide = await Users.updateOne(filter, update);
+    console.log("addedGuide: ", addedGuide);
+    addedGuide
+      ? res.status(200).json({ message: "Guide added to bookmarks." })
+      : res.status(500).json({ message: "Error adding guide to bookmarks." });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding guide to bookmarks." });
+  }
+};
+
+exports.getUserBookmarks = async (req, res) => {
+  try {
+    // console.log("req.body: ", req.body);
+    const filter = { _id: req.body._id };
+    let bookmarks = await Users.findOne(filter);
+    // console.log("bookmarks: ", bookmarks.bookmarkedGuides);
+    bookmarks = bookmarks.bookmarkedGuides;
+    res.status(200).json({ message: "User bookmarks retrieved.", bookmarks });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving user bookmarks." });
+  }
+};
+
+exports.removeGuideFromBookmarks = async (req, res) => {
+  try {
+    const filter = { _id: req.body._id };
+    const update = { $pull: { bookmarkedGuides: req.body.guide_id } };
+    const removedGuide = await Users.updateOne(filter, update);
+    console.log(removedGuide);
+    removedGuide
+      ? res.status(200).json({ message: "Guide removed from bookmarks." })
+      : res
+          .status(500)
+          .json({ message: "Error removing guide from bookmarks." });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing guide from bookmarks." });
   }
 };

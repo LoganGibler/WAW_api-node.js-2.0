@@ -23,6 +23,7 @@ const usersSchema = mongoose.Schema({
   lockedUntil: {
     type: Number,
   },
+  bookmarkedGuides: [],
 });
 
 const Users = mongoose.model("Users", usersSchema);
