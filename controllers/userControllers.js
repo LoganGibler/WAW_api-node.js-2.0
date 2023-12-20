@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Users = require("../db/usersModel");
+const Guides = require("../db/guidesModel");
 
 exports.testAuth = async (req, res) => {
   try {
@@ -144,6 +145,40 @@ exports.getUserBookmarks = async (req, res) => {
     bookmarks = bookmarks.bookmarkedGuides;
     res.status(200).json({ message: "User bookmarks retrieved.", bookmarks });
   } catch (error) {
+    res.status(500).json({ message: "Error retrieving user bookmarks." });
+  }
+};
+
+exports.getUserBookmarksData = async (req, res) => {
+  try {
+    const filter = { _id: req.body._id };
+    let user = await Users.findOne(filter);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const bookmarks = user.bookmarkedGuides;
+
+    if (bookmarks.length) {
+      const foundGuidesPromises = bookmarks.map(async (_id) => {
+        const filter = { _id: _id };
+        const guideData = await Guides.findOne(filter);
+        return guideData;
+      });
+      const foundGuides = await Promise.all(foundGuidesPromises);
+      // console.log("foundGuides array:", foundGuides);
+      res.status(200).json({
+        message: "User bookmarked Guides have retrieved.",
+        foundGuides,
+      });
+    } else {
+      res
+        .status(200)
+        .json({ message: "User has no bookmarked Guides.", foundGuides: [] });
+    }
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error retrieving user bookmarks." });
   }
 };

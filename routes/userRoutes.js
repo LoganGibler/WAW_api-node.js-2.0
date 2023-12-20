@@ -18,7 +18,7 @@ router.post(
 );
 
 router.post("/getUserBookmarks", authenticate, UserController.getUserBookmarks);
-
+router.post("/getUsersBookmarkedGuides", authenticate, UserController.getUserBookmarksData)
 router.post(
   "/removeGuideFromBookmarks",
   authenticate,

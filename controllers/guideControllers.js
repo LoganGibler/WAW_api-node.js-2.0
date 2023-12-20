@@ -194,6 +194,18 @@ exports.getUsersPublishedUnreviewedGuides = async (req, res) => {
   }
 };
 
+exports.getUsersGuides = async (req, res) => {
+  try {
+    const filter = { author_id: req.body._id };
+    const foundGuides = await Guides.find(filter);
+    foundGuides
+      ? res.status(200).json({ foundGuides })
+      : res.status(500).json({ message: "no guides found." });
+  } catch (error) {
+    res.status(500).json({ message: "couldnt find any users guides" });
+  }
+};
+
 // store user ID in cookie upon login. then grab cookie out of request, doesnt have to be http only, but prefered.
 exports.getPublishedApprovedGuides = async (req, res) => {
   try {
