@@ -78,7 +78,7 @@ exports.loginUser = async (req, res) => {
         const token = jwt.sign({ username }, process.env.JWT_SECRET, {
           expiresIn: "12h",
         });
-        // console.log("Generated Token: ", token);
+        console.log("Generated Token: ", token);
         res
           .cookie("USER_ID", user_id)
           .cookie("AUTH_API", token)
