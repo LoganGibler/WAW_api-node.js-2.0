@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Users = require("../db/usersModel");
 const Guides = require("../db/guidesModel");
+const { default: mongoose } = require("mongoose");
 
 exports.testAuth = async (req, res) => {
   try {
@@ -111,11 +112,14 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  const { _id } = req.body._id;
   // console.log("/getUser req.body: ");
+  const userID = req.body._id;
+
   try {
-    const user = await Users.findOne({ _id: _id });
-    res.status(200).json({ message: "User found.", user });
+    const filter = { _id: new mongoose.Types.ObjectId(userID) };
+    const foundUser = await Users.findOne(filter);
+    console.log("Here is found user:", foundUser);
+    res.status(200).json({ message: "User found.", foundUser });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving user data." });
   }
@@ -123,7 +127,6 @@ exports.getUser = async (req, res) => {
 
 exports.addGuideToBookmarks = async (req, res) => {
   try {
-    console.log("req.body: ", req.body);
     const update = { $push: { bookmarkedGuides: req.body.guide_id } };
     const filter = { _id: req.body._id };
     const addedGuide = await Users.updateOne(filter, update);
@@ -138,10 +141,12 @@ exports.addGuideToBookmarks = async (req, res) => {
 
 exports.getUserBookmarks = async (req, res) => {
   try {
-    // console.log("req.body: ", req.body);
-    const filter = { _id: req.body._id };
+    const userID = req.body._id;
+    const filter = { _id: new mongoose.Types.ObjectId(userID) };
     let bookmarks = await Users.findOne(filter);
-    // console.log("bookmarks: ", bookmarks.bookmarkedGuides);
+
+    console.log("bookmarks: ", bookmarks.bookmarkedGuides);
+
     bookmarks = bookmarks.bookmarkedGuides;
     res.status(200).json({ message: "User bookmarks retrieved.", bookmarks });
   } catch (error) {
@@ -149,11 +154,14 @@ exports.getUserBookmarks = async (req, res) => {
   }
 };
 
-exports.getUserBookmarksData = async (req, res) => {
+exports.getUserBookmarkedData = async (req, res) => {
   try {
-    const filter = { _id: req.body._id };
-    let user = await Users.findOne(filter);
+    const userID = req.body._id;
+    // console.log("Here is userID!!!!:", userID);
+    const filter = { _id: new mongoose.Types.ObjectId(userID) };
 
+    let user = await Users.findOne(filter);
+    // console.log("getUserBookmarksDAta founduser: ", user);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -162,12 +170,12 @@ exports.getUserBookmarksData = async (req, res) => {
 
     if (bookmarks.length) {
       const foundGuidesPromises = bookmarks.map(async (_id) => {
-        const filter = { _id: _id };
+        const filter = { _id: _id, published: true, approved: true };
         const guideData = await Guides.findOne(filter);
         return guideData;
       });
       const foundGuides = await Promise.all(foundGuidesPromises);
-      // console.log("foundGuides array:", foundGuides);
+      console.log("foundGuides array:", foundGuides);
       res.status(200).json({
         message: "User bookmarked Guides have retrieved.",
         foundGuides,

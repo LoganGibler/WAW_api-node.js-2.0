@@ -1,4 +1,6 @@
+const { default: mongoose } = require("mongoose");
 const Guides = require("../db/guidesModel");
+const Users = require("../db/usersModel");
 
 exports.allGuides = async (req, res) => {
   try {
@@ -172,7 +174,13 @@ exports.getFeaturedGuides = async (req, res) => {
 
 exports.getPublishedUnapprovedGuides = async (req, res) => {
   try {
-    const filter = { approved: false, published: "true" };
+    const userID = req.body._id;
+    const userFilter = { _id: new mongoose.Types.ObjectId(userID) };
+    const user = await Users.findOne(userFilter);
+
+    // RESUME WORK HERE
+
+    const filter = { approved: false, published: true };
     const publishedUnapprovedGuides = await Guides.find(filter);
     res.status(200).json({ publishedUnapprovedGuides });
   } catch (error) {
