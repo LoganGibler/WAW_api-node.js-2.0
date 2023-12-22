@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const Guides = require("../db/guidesModel");
 const Users = require("../db/usersModel");
+const { ObjectID } = require("mongodb");
 
 exports.allGuides = async (req, res) => {
   try {
@@ -174,14 +175,15 @@ exports.getFeaturedGuides = async (req, res) => {
 
 exports.getPublishedUnapprovedGuides = async (req, res) => {
   try {
-    const userID = req.body._id;
-    const userFilter = { _id: new mongoose.Types.ObjectId(userID) };
-    const user = await Users.findOne(userFilter);
+    // const userID = req.body._id;
+    // const userFilter = { _id: new mongoose.Types.ObjectId(userID) };
+    // const user = await Users.findOne(userFilter);
 
     // RESUME WORK HERE
 
     const filter = { approved: false, published: true };
     const publishedUnapprovedGuides = await Guides.find(filter);
+    console.log(publishedUnapprovedGuides);
     res.status(200).json({ publishedUnapprovedGuides });
   } catch (error) {
     res.status(500).json({ message: "could not find featured guides." });
@@ -285,5 +287,22 @@ exports.getSearchResult = async (req, res) => {
     res.status(200).json({ searchResult });
   } catch (error) {
     res.status(500).json({ message: "Search failed." });
+  }
+};
+
+exports.getUsersGuideByID = async (req, res) => {
+  const userID = req.body._id;
+  const guideID = req.body.guide_id;
+
+  try {
+    const filter = { _id: new mongoose.Types.ObjectId(guideID) };
+    const guide = await Guides.findOne(filter);
+    // console.log(guide.author_id);
+
+    guide.author_id === userID
+      ? res.status(200).json({ guide })
+      : res.status(500).json({ message: "guide not available for viewing." });
+  } catch (error) {
+    res.status(500).json();
   }
 };

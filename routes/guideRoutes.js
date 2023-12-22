@@ -63,6 +63,12 @@ router.post(
   GuideController.getPrivateGuidesByUserId
 );
 
+router.post(
+  "/getUsersGuideByID",
+  authenticate,
+  GuideController.getUsersGuideByID
+);
+
 router.post("/getUsersGuides", authenticate, GuideController.getUsersGuides);
 
 module.exports = router;
