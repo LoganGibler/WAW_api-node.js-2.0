@@ -17,6 +17,7 @@ const authenticate = async (req, res, next) => {
       .status(403)
       .send("Error Authenticating. No user has been found.");
   }
+  let adminStatus = username.admin;
 
   username = username.username;
 
@@ -36,6 +37,7 @@ const authenticate = async (req, res, next) => {
       req.token = token;
       req.decodedToken = decodedToken;
       req.user_id = user_id;
+      req.adminStatus = adminStatus;
       // console.log("Token is good. Moving on.");
       // console.log("req", req);
       next();
