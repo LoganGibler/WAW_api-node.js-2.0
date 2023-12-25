@@ -25,6 +25,7 @@ exports.createGuide = async (req, res) => {
 exports.deleteGuide = async (req, res) => {
   try {
     const filter = { _id: req.body._id };
+    console.log("filter: ", filter)
     const deletedGuide = await Guides.deleteOne(filter);
     deletedGuide &&
       res.status(200).json({ message: "guide successfully deleted." });
