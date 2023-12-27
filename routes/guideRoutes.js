@@ -22,6 +22,7 @@ router.post("/editDescription", authenticate, GuideController.editDescription);
 router.post("/editTitle", authenticate, GuideController.editTitle);
 router.post("/editDifficulty", authenticate, GuideController.editDifficulty);
 router.post("/getSearchResult", GuideController.getSearchResult);
+router.post("/updateHeader", authenticate, GuideController.updateHeader);
 
 //get*Guides
 router.get("/getFeaturedGuides", GuideController.getFeaturedGuides);

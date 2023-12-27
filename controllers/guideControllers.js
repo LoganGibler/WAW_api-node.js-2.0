@@ -25,7 +25,7 @@ exports.createGuide = async (req, res) => {
 exports.deleteGuide = async (req, res) => {
   try {
     const filter = { _id: req.body._id };
-    console.log("filter: ", filter)
+    console.log("filter: ", filter);
     const deletedGuide = await Guides.deleteOne(filter);
     deletedGuide &&
       res.status(200).json({ message: "guide successfully deleted." });
@@ -78,7 +78,7 @@ exports.addStep = async (req, res) => {
   try {
     let newStep = { step: req.body.step };
 
-    const step = await Alerts.updateOne(
+    const step = await Guides.updateOne(
       { _id: req.body._id },
       { $push: { steps: newStep } }
     );
@@ -114,7 +114,7 @@ exports.editStep = async (req, res) => {
     let update = {};
     let editedStep = "steps." + index + ".step";
     update[editedStep] = newStepData;
-    const updatedStep = await Alerts.findOneAndUpdate(filter, update, {
+    const updatedStep = await Guides.findOneAndUpdate(filter, update, {
       new: true,
     });
     updatedStep
@@ -164,6 +164,24 @@ exports.editDifficulty = async (req, res) => {
   }
 };
 
+exports.updateHeader = async (req, res) => {
+  try {
+    const filter = { _id: req.body._id };
+    const update = {
+      vmtitle: req.body.vmtitle,
+      difficulty: req.body.difficulty,
+      system: req.body.system,
+      hostedby: req.body.hostedby,
+    };
+    const updatedGuide = await Guides.findOneAndUpdate(filter, update);
+    updatedGuide
+      ? res.status(200).json({ message: "/editHeader successful." })
+      : res.status(500).json({ message: "/editHeader failed." });
+  } catch (error) {
+    res.status(500).json({ message: "/editHeader failed." });
+  }
+};
+
 exports.getFeaturedGuides = async (req, res) => {
   try {
     const filter = { featured: true };
@@ -176,12 +194,6 @@ exports.getFeaturedGuides = async (req, res) => {
 
 exports.getPublishedUnapprovedGuides = async (req, res) => {
   try {
-    // const userID = req.body._id;
-    // const userFilter = { _id: new mongoose.Types.ObjectId(userID) };
-    // const user = await Users.findOne(userFilter);
-
-    // RESUME WORK HERE
-
     const filter = { approved: false, published: true };
     const publishedUnapprovedGuides = await Guides.find(filter);
     console.log(publishedUnapprovedGuides);
