@@ -72,4 +72,10 @@ router.post(
 
 router.post("/getUsersGuides", authenticate, GuideController.getUsersGuides);
 
+router.post(
+  "/forceGetGuideById",
+  authenticate,
+  GuideController.forceGetGuideById
+);
+
 module.exports = router;

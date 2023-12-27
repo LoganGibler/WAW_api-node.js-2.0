@@ -120,7 +120,7 @@ exports.getUser = async (req, res) => {
   try {
     const filter = { _id: new mongoose.Types.ObjectId(userID) };
     const foundUser = await Users.findOne(filter);
-    console.log("Here is found user:", foundUser);
+    // console.log("Here is found user:", foundUser);
     res.status(200).json({ message: "User found.", foundUser });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving user data." });

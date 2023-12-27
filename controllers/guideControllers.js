@@ -265,6 +265,21 @@ exports.getPublicGuideById = async (req, res) => {
   }
 };
 
+exports.forceGetGuideById = async (req, res) => {
+  try {
+    const filter = { _id: req.body._id, published: true};
+    const guide = await Guides.find(filter);
+
+    console.log("Guide from forceget:", guide);
+
+    guide
+      ? res.status(200).json({ guide })
+      : res.status(500).json({ message: "failed to find guide." });
+  } catch (error) {
+    res.status(500).json({ message: "failed to forcefully get guide." });
+  }
+};
+
 exports.getPrivateGuideById = async (req, res) => {
   try {
     const filter = { _id: req.body._id, published: false, approved: false };
