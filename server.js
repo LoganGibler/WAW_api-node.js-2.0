@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    // origin: "https://webappwarfare.netlify.app", // Replace with your client's origin
+    origin: "https://webappwarfare.netlify.app", // Replace with your client's origin
     // origin: "http://localhost:5173",
   })
 );

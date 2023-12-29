@@ -7,9 +7,16 @@ const { default: mongoose } = require("mongoose");
 exports.testAuth = async (req, res) => {
   try {
     let userID = req.user_id;
-    let username = req.decodedToken.username
-    let adminStatus = req.adminStatus
-    res.status(200).json({ message: "User is authenticated.", userID, username, adminStatus});
+    let username = req.decodedToken.username;
+    let adminStatus = req.adminStatus;
+    res
+      .status(200)
+      .json({
+        message: "User is authenticated.",
+        userID,
+        username,
+        adminStatus,
+      });
   } catch (error) {
     res.status(500).json({ message: "User is not authenticated." });
   }
@@ -79,9 +86,9 @@ exports.loginUser = async (req, res) => {
         // console.log(process.env.JWT_SECRET);
         // console.log({ username });
         const token = jwt.sign({ username }, process.env.JWT_SECRET, {
-          expiresIn: "12h",
+          expiresIn: "1h",
         });
-        console.log("Generated Token: ", token);
+        // console.log("Generated Token: ", token);
         res
           .cookie("USER_ID", user_id)
           .cookie("AUTH_API", token)
