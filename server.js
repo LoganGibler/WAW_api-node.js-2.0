@@ -19,8 +19,8 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: "https://webappwarfare.netlify.app", // Replace with your client's origin
-    // origin: "http://localhost:5173",
+    // origin: "https://webappwarfare.netlify.app", // Replace with your client's origin
+    origin: "http://localhost:5173",
   })
 );
 
@@ -29,7 +29,7 @@ app.use("/guides", guideRoutes);
 
 // connecting to DB
 mongoose
-  .connect(process.env.DATABASE_URL)
+  .connect(process.env.DATABASE_URL_QA)
   .then(() => {
     app.listen(process.env.PORT || 8000, () => {
       console.log("connected to mongodb.");
