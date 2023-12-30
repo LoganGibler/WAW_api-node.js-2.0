@@ -19,8 +19,8 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "https://webappwarfare.netlify.app",
-  "http://webappwarfare.com",
-  "http://www.webappwarfare.com",
+  "https://webappwarfare.com",
+  "https://www.webappwarfare.com",
   // Add more origins as needed
 ];
 
