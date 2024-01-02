@@ -7,9 +7,16 @@ const { default: mongoose } = require("mongoose");
 exports.testAuth = async (req, res) => {
   try {
     let userID = req.user_id;
-    let username = req.decodedToken.username
-    let adminStatus = req.adminStatus
-    res.status(200).json({ message: "User is authenticated.", userID, username, adminStatus});
+    let username = req.decodedToken.username;
+    let adminStatus = req.adminStatus;
+    res
+      .status(200)
+      .json({
+        message: "User is authenticated.",
+        userID,
+        username,
+        adminStatus,
+      });
   } catch (error) {
     res.status(500).json({ message: "User is not authenticated." });
   }
