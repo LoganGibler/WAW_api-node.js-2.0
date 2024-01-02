@@ -16,10 +16,18 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // app.use(morgan("dev"));
+
+const allowedOrigins = [
+  "https://webappwarfare.netlify.app",
+  "https://webappwarfare.com",
+  "https://www.webappwarfare.com",
+  // Add more origins as needed
+];
+
 app.use(
   cors({
     credentials: true,
-    // origin: "https://webappwarfare.netlify.app", // Replace with your client's origin
+    origin: allowedOrigins, // Replace with your client's origin
     // origin: "http://localhost:5173",
   })
 );
