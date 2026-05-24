@@ -21,8 +21,8 @@ const allowedOrigins = [
   "https://webappwarfare.netlify.app",
   "https://webappwarfare.com",
   "https://www.webappwarfare.com",
-  "http://192.168.1.244:30081", // worker 1
-  "http://192.168.1.228:30081", // worker 2
+  "http://192.168.1.244:30082", // worker 1
+  "http://192.168.1.228:30082", // worker 2
   "http://localhost:5173", // local dev
   // Add more origins as needed
 ];
